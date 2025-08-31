@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Payoff vs. Investment Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d2d6dc;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        .result-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .summary-card {
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-screen-xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Mortgage Payoff vs. Investment Calculator</h1>
+            <p class="mt-2 text-lg text-gray-600">Compare three strategies for your extra cash.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Input Section -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-3">Your Financial Details</h2>
+                
+                <div class="input-group">
+                    <label for="loanBalance" class="input-label">Mortgage Balance ($)</label>
+                    <input type="number" id="loanBalance" class="input-field" value="250000">
+                </div>
+                <div class="input-group">
+                    <label for="offsetBalance" class="input-label">Offset Account Balance ($)</label>
+                    <input type="number" id="offsetBalance" class="input-field" value="50000">
+                </div>
+                 <div class="input-group">
+                    <label for="interestRate" class="input-label">Interest Rate (%)</label>
+                    <input type="number" id="interestRate" class="input-field" value="3.5">
+                </div>
+                <div class="input-group">
+                    <label for="remainingTerm" class="input-label">Remaining Term (Years)</label>
+                    <input type="number" id="remainingTerm" class="input-field" value="25">
+                </div>
+                <div class="input-group">
+                    <label for="paymentFrequency" class="input-label">Payment Frequency</label>
+                    <select id="paymentFrequency" class="input-field">
+                        <option value="monthly" selected>Monthly</option>
+                        <option value="fortnightly">Fortnightly</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="extraPayment" class="input-label">Extra Payment Per Period ($)</label>
+                    <input type="number" id="extraPayment" class="input-field" value="500">
+                </div>
+                 <div class="input-group">
+                    <label for="originalHousePrice" class="input-label">Original House Price ($)</label>
+                    <input type="number" id="originalHousePrice" class="input-field" value="400000">
+                </div>
+                <div class="input-group">
+                    <label for="houseGrowthRate" class="input-label">Annual House Growth (%)</label>
+                    <input type="number" id="houseGrowthRate" class="input-field" value="4">
+                </div>
+                <div class="input-group">
+                    <label for="etfReturn" class="input-label">Annual ETF Return (%)</label>
+                    <input type="number" id="etfReturn" class="input-field" value="7">
+                </div>
+                <div class="input-group">
+                    <label for="savingsRate" class="input-label">High Yield Savings Rate (%)</label>
+                    <input type="number" id="savingsRate" class="input-field" value="4.5">
+                </div>
+                <div class="input-group">
+                    <label for="capitalGains" class="input-label">Capital Gains Tax (%)</label>
+                    <input type="number" id="capitalGains" class="input-field" value="15">
+                </div>
+                <button id="calculateBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 shadow-lg">
+                    Calculate Comparison
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="lg:col-span-3">
+                <div id="results-container" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <!-- Scenario 1 -->
+                    <div class="result-card">
+                        <h3 class="result-title text-indigo-700">Scenario 1: Pay Off Mortgage</h3>
+                        <div id="mortgage-results" class="flex-grow"><p class="text-gray-500 text-center py-8">Enter details and calculate.</p></div>
+                    </div>
+                    <!-- Scenario 2 -->
+                    <div class="result-card">
+                        <h3 class="result-title text-emerald-700">Scenario 2: Invest Immediately</h3>
+                        <div id="investment-results" class="flex-grow"><p class="text-gray-500 text-center py-8">Enter details and calculate.</p></div>
+                    </div>
+                    <!-- Scenario 3 -->
+                    <div class="result-card">
+                        <h3 class="result-title text-sky-700">Scenario 3: Pay Mortgage, Then Invest</h3>
+                        <div id="mortgage-then-invest-results" class="flex-grow"><p class="text-gray-500 text-center py-8">Enter details and calculate.</p></div>
+                    </div>
+                </div>
+                <!-- Summary Section -->
+                <div id="summary-container" class="mt-8 hidden">
+                     <div id="summary-card" class="summary-card">
+                        <h2 id="summary-title" class="text-2xl font-bold mb-2"></h2>
+                        <p id="summary-text" class="text-lg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculateBtn').addEventListener('click', () => {
+            // --- Get User Inputs ---
+            const loanBalance = parseFloat(document.getElementById('loanBalance').value);
+            const offsetBalance = parseFloat(document.getElementById('offsetBalance').value);
+            const annualInterestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const remainingYears = parseFloat(document.getElementById('remainingTerm').value);
+            const frequency = document.getElementById('paymentFrequency').value;
+            const extraPeriodicPayment = parseFloat(document.getElementById('extraPayment').value);
+            const originalHousePrice = parseFloat(document.getElementById('originalHousePrice').value);
+            const annualHouseGrowth = parseFloat(document.getElementById('houseGrowthRate').value) / 100;
+            const annualEtfReturn = parseFloat(document.getElementById('etfReturn').value) / 100;
+            const annualSavingsRate = parseFloat(document.getElementById('savingsRate').value) / 100;
+            const capitalGainsRate = parseFloat(document.getElementById('capitalGains').value) / 100;
+
+            // --- Input Validation ---
+            if ([loanBalance, offsetBalance, annualInterestRate, remainingYears, extraPeriodicPayment, originalHousePrice, annualHouseGrowth, annualEtfReturn, annualSavingsRate, capitalGainsRate].some(isNaN)) {
+                console.error("Please fill in all fields with valid numbers.");
+                return;
+            }
+
+            // --- Setup periodic rates and terms ---
+            const periodsPerYear = frequency === 'fortnightly' ? 26 : 12;
+            const periodicInterestRate = annualInterestRate / periodsPerYear;
+            const totalPeriods = remainingYears * periodsPerYear;
+            const periodicEtfReturn = annualEtfReturn / periodsPerYear;
+            const periodicSavingsRate = annualSavingsRate / periodsPerYear;
+
+            // --- Calculate future house value ---
+            const futureHouseValue = originalHousePrice * Math.pow(1 + annualHouseGrowth, remainingYears);
+
+            // --- Calculate Original Mortgage Details ---
+            const originalPeriodicPayment = calculatePeriodicPayment(loanBalance, periodicInterestRate, totalPeriods);
+            let originalTotalInterestWithOffset = 0;
+            let tempOrigBalance = loanBalance;
+            for(let i=0; i < totalPeriods && tempOrigBalance > 0; i++) {
+                const interestComponent = Math.max(0, tempOrigBalance - offsetBalance) * periodicInterestRate;
+                originalTotalInterestWithOffset += interestComponent;
+                const principalComponent = originalPeriodicPayment - interestComponent;
+                tempOrigBalance -= principalComponent;
+            }
+
+            // --- SCENARIO 1: PAY OFF MORTGAGE ---
+            const acceleratedPayment = originalPeriodicPayment + extraPeriodicPayment;
+            let newRemainingPeriods = 0;
+            let tempBalanceS1 = loanBalance;
+            let newTotalInterest = 0;
+            while (tempBalanceS1 > 0 && newRemainingPeriods < totalPeriods * 2) {
+                const interestComponent = Math.max(0, tempBalanceS1 - offsetBalance) * periodicInterestRate;
+                newTotalInterest += interestComponent;
+                const principalComponent = acceleratedPayment - interestComponent;
+                tempBalanceS1 -= principalComponent;
+                newRemainingPeriods++;
+            }
+            const interestSaved = originalTotalInterestWithOffset - newTotalInterest;
+            const payoffYears = Math.floor(newRemainingPeriods / periodsPerYear);
+            const payoffMonths = Math.floor(((newRemainingPeriods % periodsPerYear) / periodsPerYear) * 12);
+            const netPositionS1 = futureHouseValue + offsetBalance; // Offset balance is now cash
+            displayMortgageResults(payoffYears, payoffMonths, interestSaved, futureHouseValue, offsetBalance, netPositionS1);
+
+            // --- SCENARIO 2: INVEST IMMEDIATELY ---
+            let investmentValueS2 = 0;
+            for (let i = 0; i < totalPeriods; i++) {
+                investmentValueS2 = (investmentValueS2 + extraPeriodicPayment) * (1 + periodicEtfReturn);
+            }
+            const totalContributionsS2 = extraPeriodicPayment * totalPeriods;
+            const taxOnGainsS2 = (investmentValueS2 - totalContributionsS2) * capitalGainsRate;
+            const netInvestmentValueS2 = investmentValueS2 - taxOnGainsS2;
+            let remainingMortgageS2 = loanBalance;
+            for(let i=0; i < totalPeriods; i++) {
+                const interestComponent = Math.max(0, remainingMortgageS2 - offsetBalance) * periodicInterestRate;
+                const principalComponent = originalPeriodicPayment - interestComponent;
+                remainingMortgageS2 -= principalComponent;
+            }
+            const netPositionS2 = futureHouseValue + offsetBalance + netInvestmentValueS2 - Math.max(0, remainingMortgageS2);
+            displayInvestmentResults(netInvestmentValueS2, remainingYears, futureHouseValue, Math.max(0, remainingMortgageS2), netPositionS2);
+
+            // --- SCENARIO 3: PAY MORTGAGE, THEN INVEST ---
+            const investmentPeriodsS3 = totalPeriods - newRemainingPeriods;
+            const investmentContributionS3 = originalPeriodicPayment + extraPeriodicPayment;
+            let investmentValueS3 = 0;
+            if (investmentPeriodsS3 > 0) {
+                 for (let i = 0; i < investmentPeriodsS3; i++) {
+                    investmentValueS3 = (investmentValueS3 + investmentContributionS3) * (1 + periodicEtfReturn);
+                }
+            }
+            const totalContributionsS3 = investmentContributionS3 * investmentPeriodsS3;
+            const taxOnGainsS3 = (investmentValueS3 - totalContributionsS3) * capitalGainsRate;
+            const netInvestmentValueS3 = investmentValueS3 - taxOnGainsS3;
+            
+            // Calculate future value of offset in savings account
+            let futureOffsetValue = offsetBalance;
+            if (investmentPeriodsS3 > 0) {
+                for (let i = 0; i < investmentPeriodsS3; i++) {
+                    futureOffsetValue *= (1 + periodicSavingsRate);
+                }
+            }
+            
+            const timeInvestedYears = Math.floor(investmentPeriodsS3 / periodsPerYear);
+            const timeInvestedMonths = Math.floor(((investmentPeriodsS3 % periodsPerYear) / periodsPerYear) * 12);
+
+            const netPositionS3 = futureHouseValue + netInvestmentValueS3 + futureOffsetValue;
+            displayMortgageThenInvestResults(netInvestmentValueS3, payoffYears, payoffMonths, interestSaved, timeInvestedYears, timeInvestedMonths, futureOffsetValue, futureHouseValue, netPositionS3);
+
+            // --- Update Summary ---
+            displaySummary(netPositionS1, netPositionS2, netPositionS3);
+        });
+        
+        function calculatePeriodicPayment(p, r, n) {
+            if (r === 0) return p / n;
+            return p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+        }
+
+        // --- UI Display Functions ---
+        function displayMortgageResults(pYrs, pMos, intSaved, houseVal, offsetVal, netPos) {
+            document.getElementById('mortgage-results').innerHTML = `
+                <div class="result-item"><span>Time to Payoff</span><span class="font-semibold">${pYrs} yrs, ${pMos} mos</span></div>
+                <div class="result-item"><span>Interest Saved</span><span class="font-semibold">${formatCurrency(intSaved)}</span></div>
+                <div class="result-item"><span>Future House Value</span><span class="font-semibold">${formatCurrency(houseVal)}</span></div>
+                <div class="result-item"><span>Offset Balance</span><span class="font-semibold">${formatCurrency(offsetVal)}</span></div>
+                <div class="result-item flex-col items-start sm:flex-row sm:items-center"><span class="text-indigo-600 font-bold">Final Net Position</span><span class="font-bold text-indigo-600 text-lg">${formatCurrency(netPos)}</span></div>
+            `;
+        }
+        function displayInvestmentResults(netInv, term, houseVal, remainingDebt, netPos) {
+            document.getElementById('investment-results').innerHTML = `
+                <div class="result-item"><span>Net Portfolio (after ${term} yrs)</span><span class="font-semibold">${formatCurrency(netInv)}</span></div>
+                <div class="result-item"><span>Future House Value</span><span class="font-semibold">${formatCurrency(houseVal)}</span></div>
+                <div class="result-item"><span>Remaining Mortgage</span><span class="font-semibold text-red-600">-${formatCurrency(remainingDebt)}</span></div>
+                <div class="result-item flex-col items-start sm:flex-row sm:items-center"><span class="text-emerald-600 font-bold">Final Net Position</span><span class="font-bold text-emerald-600 text-lg">${formatCurrency(netPos)}</span></div>
+            `;
+        }
+        function displayMortgageThenInvestResults(netInv, pYrs, pMos, intSaved, tInvYrs, tInvMos, fOffsetVal, houseVal, netPos) {
+            document.getElementById('mortgage-then-invest-results').innerHTML = `
+                 <div class="result-item"><span>Time to Payoff</span><span class="font-semibold">${pYrs} yrs, ${pMos} mos</span></div>
+                 <div class="result-item"><span>Interest Saved</span><span class="font-semibold">${formatCurrency(intSaved)}</span></div>
+                 <div class="result-item"><span>Time Spent Investing</span><span class="font-semibold">${tInvYrs} yrs, ${tInvMos} mos</span></div>
+                 <div class="result-item"><span>Net Portfolio Value</span><span class="font-semibold">${formatCurrency(netInv)}</span></div>
+                 <div class="result-item"><span>Future Offset Value</span><span class="font-semibold">${formatCurrency(fOffsetVal)}</span></div>
+                 <div class="result-item"><span>Future House Value</span><span class="font-semibold">${formatCurrency(houseVal)}</span></div>
+                 <div class="result-item flex-col items-start sm:flex-row sm:items-center"><span class="text-sky-600 font-bold">Final Net Position</span><span class="font-bold text-sky-600 text-lg">${formatCurrency(netPos)}</span></div>
+            `;
+        }
+        function displaySummary(pos1, pos2, pos3) {
+            const container = document.getElementById('summary-container');
+            container.classList.remove('hidden');
+            const outcomes = [
+                { name: 'Pay Off Mortgage', value: pos1, class: 'bg-indigo-100 text-indigo-900' },
+                { name: 'Invest Immediately', value: pos2, class: 'bg-emerald-100 text-emerald-900' },
+                { name: 'Pay Mortgage, Then Invest', value: pos3, class: 'bg-sky-100 text-sky-900' }
+            ];
+            const best = outcomes.reduce((p, c) => (p.value > c.value) ? p : c);
+            document.getElementById('summary-card').className = `summary-card ${best.class}`;
+            document.getElementById('summary-title').textContent = `${best.name} Appears Favorable`;
+            document.getElementById('summary-text').textContent = `Based on your inputs, this strategy results in the highest final net position of ${formatCurrency(best.value)}.`;
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('calculateBtn').click();
+        });
+    </script>
+</body>
+</html>
